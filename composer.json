@@ -1,9 +1,9 @@
 {
 	"name": "orynider/mxpadmin",
 	"type": "phpbb-extension",
-	"description": "Adds link to MX-Publisher CMS ACP in phpBB ACP.",
+	"description": "Adds link to MX-Publisher CMS ACP in phpBB Admin Control Pannel.",
 	"homepage": "https://github.com/orynider/mxpadmin",
-	"version": "0.8.9",
+	"version": "0.9.0",
 	"license": "GPL-2.0-only",
 	"authors": [
 		{

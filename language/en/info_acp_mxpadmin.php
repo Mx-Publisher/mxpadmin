@@ -110,6 +110,8 @@ $lang = array_merge($lang, array(
 	'ACP_INFO'							=> 'phpBB Informations',
 
 	'PHPBB_VERSION'					=> 'phpBB Version',
+	'PORTAL_PATH' 					=> 'Relative path to MXP [non-internal]',
+	'PORTAL_PATH_EXPLAIN' 		=> 'If using non-internal sessions and users, enter the relative path to mxpcms, eg \'../portal/\' or \'../\'. Note: slashes are important.',
 	'PHPBB_RELATIVE_PATH'		=> 'phpBB Relative Path',
 	'PHPBB_SCRIPT_PATH'			=> 'phpBB Script Path',
 	'PHPBB_SERVER_NAME'		=> 'phpBB Domain (server_name)',
