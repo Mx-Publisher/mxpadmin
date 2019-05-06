@@ -1,2 +1,2 @@
 # mxpadmin
-Adds link to MX-Publisher CMS ACP in phpBB ACP.
+Adds link to MXP-CMS ACP in phpBB ACP.

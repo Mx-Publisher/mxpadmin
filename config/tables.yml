@@ -1,0 +1,2 @@
+parameters:
+    orynider.mxpadmin.table.portal_config: '%core.table_prefix%portal_config'

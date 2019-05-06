@@ -1,0 +1,329 @@
+{% include 'overall_header.html' %}
+
+<h1>{{ lang('CONFIGURATION_TITLE') }}</h1>
+
+<p>{{ lang('PORTAL_MANAGE_INTRO') }} {{ lang('READONLY') }} </p>
+
+<p>{{ lang('MXPADMIN_DONATE_EXPLAIN') }} {{ lang('MXPADMIN_DONATE') }}</p>
+
+<form id="acp_admin_mx_portal" method="post" action="{U_ACTION}">
+<div class="acp">
+<div class="panel">
+     <dl>
+		<dt>
+		<!-- IF U_ACP -->
+		<label for="acp_short_link">
+		<a href="{U_ACP}" title="{{ lang('ACP') }}" type="acp_short_link" maxlength="255" name="acp_short_link" id="acp_short_link" role="menuitem">
+			<i class="icon fa-cogs fa-fw" aria-hidden="true"></i>
+			{{ lang('ACP_SHORT_LINK') }} ( {{ lang('ACP') }} )
+		</a>
+		</label>
+		<br />
+		<!-- ENDIF -->				
+		<span>{{ lang('ACP_INTRO_MXPADMIN') }}</span>
+		</dt>
+	</dl>
+	<br />
+	<div class="content" style="padding-left:5px;padding-right:5px;">	
+	<br />
+	<dl id="tabs">
+		<ul>
+			<li id="gen_sett_tab"><a href="javascript:selectPart('gen_sett')"><span>{{ lang('GENERAL_SETTINGS') }} {{ lang('READONLY') }}</span></a></li>
+			<li id="portal_back_tab"><a href="javascript:selectPart('portal_back')"><span>{{ lang('PORTAL_BACKEND') }}</span></a></li>
+			<li id="cookie_sett_tab"><a href="javascript:selectPart('cookie_sett')"><span>{{ lang('ACP_COOKIE_SETTINGS') }} {{ lang('READONLY') }}</span></a></li>
+			<li id="style_sett_tab"><a href="javascript:selectPart('style_sett')"><span>{{ lang('ACP_BOARD_SETTINGS') }} {{ lang('READONLY') }}</span></a></li>
+			<li id="email_sett_tab"><a href="javascript:selectPart('email_sett')"><span>{{ lang('ACP_EMAIL_SETTINGS') }} {{ lang('READONLY') }}</span></a></li>
+			<li id="config_info_tab"><a href="javascript:selectPart('config_info')"><span>{{ lang('ACP_INFO') }} {{ lang('READONLY') }}</span></a></li>
+		</ul>
+	</dl>
+	</div>
+	<div class="content" style="padding-left:5px;padding-right:5px;">
+<fieldset id="gen_sett">
+	<dl>
+		<dt><label for="portal_name">{{ lang('PORTAL_NAME') }}</label></dt>
+		<dd><input type="text" maxlength="150" size="50" name="portal_name" id="portal_name" value="{PORTAL_NAME}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="portal_desc">{{ lang('PORTAL_DESC') }}</label></dt>
+		<dd><input type="text" maxlength="150" size="50" name="portal_desc" id="portal_desc" value="{PORTAL_DESC}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="portal_status_1">{{ lang('PORTAL_STATUS') }}</label><br /><span class="explain">{{ lang('PORTAL_STATUS_EXPLAIN') }}</span></dt>
+		<dd><input type="radio" name="portal_status" id="portal_status_1" value="1" class="radio" {S_PORTAL_STATUS_YES} /> <label for="portal_status_1">{{ lang('YES') }}</label>&nbsp;
+		<input type="radio" name="portal_status" id="portal_status_0" value="0" class="radio" {S_PORTAL_STATUS_NO} /> <label for="portal_status_0">{{ lang('NO') }}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="disabled_message">{{ lang('DISABLED_MESSAGE') }}</label></dt>
+		<dd><textarea rows="5" cols="50" wrap="virtual" name="disabled_message" id="disabled_message">{DISABLED_MESSAGE}</textarea></dd>
+	</dl>
+	<dl>
+		<dt><label for="server_name">{{ lang('SERVER_NAME') }}</label></dt>
+		<dd><input type="text" maxlength="255" size="40" name="server_name" id="server_name" value="{SERVER_NAME}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="server_port">{{ lang('SERVER_PORT') }}</label><br /><span class="explain">{{ lang('SERVER_PORT_EXPLAIN') }}</span></dt>
+		<dd><input type="text" maxlength="5" size="5" name="server_port" id="server_port" value="{SERVER_PORT}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="script_path">{{ lang('SCRIPT_PATH') }}</label><br /><span class="explain">{{ lang('SCRIPT_PATH_EXPLAIN') }}</span></dt>
+		<dd><input type="text" maxlength="255" name="script_path" id="script_path" value="{SCRIPT_PATH}" /></dd>
+	</dl>
+	<dl>
+		<dt>
+		<label for="default_timezone">{{ lang('DEFAULT_DATE_FORMAT') }}</label><br />
+		<span class="explain">{{ lang('DEFAULT_DATE_FORMAT_EXPLAIN') }}</span>
+		</dt>
+		<dd>
+		<input type="text" name="default_dateformat" id="default_dateformat" value="{DEFAULT_DATEFORMAT}" />
+		</dd>
+	</dl>
+	<dl>
+		<dt><label for="board_timezone">{{ lang('SYSTEM_TIMEZONE') }}</label></dt>
+		<dd><select name="board_timezone" id="board_timezone">{TIMEZONE_SELECT}</select></dd>
+	</dl>
+	<dl>
+		<dt><label for="gzip_compress_0">{{ lang('ENABLE_GZIP') }}</label></dt>
+		<dd><input type="radio" name="gzip_compress" id="gzip_compress_1" value="1" class="radio" {GZIP_YES} /> <label for="gzip_compress_1">{{ lang('YES') }}</label>&nbsp;
+		<input type="radio" name="gzip_compress" id="gzip_compress_0" value="0" class="radio" {GZIP_NO} /> <label for="gzip_compress_0">{{ lang('NO') }}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="mx_use_cache_1">{{ lang('MX_USE_CACHE') }}</label><br /><span class="explain">{{ lang('MX_USE_CACHE_EXPLAIN') }}</span></dt>
+		<dd><input type="radio" name="mx_use_cache" id="mx_use_cache_1" value="1" class="radio" {S_MX_USE_CACHE_YES} /> <label for="mx_use_cache_1">{{ lang('YES') }}</label>&nbsp;
+		<input type="radio" name="mx_use_cache" id="mx_use_cache_0" value="0" class="radio" {S_MX_USE_CACHE_NO} /> <label for="mx_use_cache_0">{{ lang('NO') }}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="mod_rewrite_1">{{ lang('MX_MOD_REWRITE') }}</label><br /><span class="explain">{{ lang('MX_MOD_REWRITE_EXPLAIN') }}</span></dt>
+		<dd><input type="radio" name="mod_rewrite" id="mod_rewrite_1" value="1" class="radio" {S_MX_MOD_REWRITE_YES} /> <label for="mod_rewrite_1">{{ lang('YES') }}</label>&nbsp;
+		<input type="radio" name="mod_rewrite" id="mod_rewrite_0" value="0" class="radio" {S_MX_MOD_REWRITE_NO} /> <label for="mod_rewrite_0">{{ lang('NO') }}</label></dd>
+	</dl>
+</fieldset>
+<fieldset id="portal_back">
+	<dl>
+		<dt><label for="portal_backend">{{ lang('PORTAL_BACKEND') }} {{ lang('READONLY') }}</label><br /><span class="explain">{{ lang('PORTAL_BACKEND_EXPLAIN') }}</span></dt>
+		<dd>{PORTAL_BACKEND_SELECT}</dd>
+		<dd>( {PORTAL_DB_BACKEND}  / {PORTAL_CURRENT_BACKEND} )</dd>	
+	</dl>
+	<dl>
+		<dt><label for="portal_backend_path">{{ lang('PORTAL_BACKEND_PATH') }}</label><br /><span class="explain">{{ lang('PORTAL_BACKEND_PATH_EXPLAIN') }}</span></dt>
+		<dd><input type="text" maxlength="255" name="portal_backend_path" id="portal_backend_path" value="{PORTAL_BACKEND_PATH}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="portal_backend_path">{{ lang('PORTAL_BACKEND_PATH') }}</label><br /><span class="explain">{{ lang('PORTAL_BACKEND_PATH_EXPLAIN') }}</span></dt>
+		<dd><input type="text" maxlength="255" name="portal_path" id="portal_path" value="{PORTAL_PATH}" /></dd>
+	</dl>	
+	<dl>
+		<dt><label>{{ lang('PORTAL_CONFIG_VALID') }} {{ lang('READONLY') }}</label></dt>
+		<dd><!-- IF S_PORTAL_BACKEND_VALID_STATUS -->{{ lang('PORTAL_CONFIG_VALID_TRUE') }}<!-- ELSE -->{{ lang('PORTAL_CONFIG_VALID_FALSE') }}<!-- ENDIF --></dd>
+	</dl>
+	<p align="center">
+		<input type="text" maxlength="255" name="submit" value="{{ lang('PORTAL_BACKEND_SUBMIT') }}" class="explain" />
+	</p>
+</fieldset>
+<fieldset id="cookie_sett">
+	<legend></legend>
+	<div class="explain">{{ lang('ACP_COOKIE_SETTINGS_EXPLAIN') }}<br /></div>
+	<dl>
+		<dt><label for="cookie_domain">{{ lang('COOKIE_DOMAIN') }}</label></dt>
+		<dd><input type="text" maxlength="255" name="cookie_domain" id="cookie_domain" value="{COOKIE_DOMAIN}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="cookie_name">{{ lang('COOKIE_NAME') }}</label></dt>
+		<dd><input type="text" maxlength="16" name="cookie_name" id="cookie_name" value="{COOKIE_NAME}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="cookie_path">{{ lang('COOKIE_PATH') }}</label></dt>
+		<dd><input type="text" maxlength="255" name="cookie_path" id="cookie_path" value="{COOKIE_PATH}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="cookie_secure_0">{{ lang('COOKIE_SECURE') }}</label><br /><span class="explain">{{ lang('COOKIE_SECURE_EXPLAIN') }}</span></dt>
+		<dd><input type="radio" name="cookie_secure" id="cookie_secure_0" value="0" class="radio" {S_COOKIE_SECURE_DISABLED} /> <label for="cookie_secure_0">{{ lang('DISABLED') }}</label>&nbsp;
+		&nbsp;<input type="radio" name="cookie_secure" id="cookie_secure_1" value="1" class="radio" {S_COOKIE_SECURE_ENABLED} /> <label for="cookie_secure_1">{{ lang('ENABLED') }}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="session_length">{{ lang('SESSION_LENGTH') }}</label></dt>
+		<dd><input type="text" maxlength="5" size="5" name="session_length" id="session_length" value="{SESSION_LENGTH}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="allow_autologin_1">{{ lang('ALLOW_AUTOLOGIN') }}</label><br /><span class="explain">{{ lang('ALLOW_AUTOLOGIN_EXPLAIN') }}</span></dt>
+		<dd><input type="radio" name="allow_autologin" id="allow_autologin_1" value="1" class="radio" {ALLOW_AUTOLOGIN_YES} /> <label for="allow_autologin_1">{{ lang('YES') }}</label>&nbsp;
+		&nbsp;<input type="radio" name="allow_autologin" id="allow_autologin_0" value="0" class="radio" {ALLOW_AUTOLOGIN_NO} /> <label for="allow_autologin_0">{{ lang('NO') }}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="max_autologin_time">{{ lang('AUTOLOGIN_TIME') }}</label><br /><span class="explain">{{ lang('AUTOLOGIN_TIME_EXPLAIN') }}</span></dt>
+		<dd><input type="text" size="3" maxlength="4" name="max_autologin_time" id="max_autologin_time" value="{AUTOLOGIN_TIME}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="max_login_attempts">{{ lang('MAX_LOGIN_ATTEMPTS') }}</label><br /><span class="explain">{{ lang('MAX_LOGIN_ATTEMPTS_EXPLAIN') }}</span></dt>
+		<dd><input type="text" size="3" maxlength="4" name="max_login_attempts" id="max_login_attempts" value="{MAX_LOGIN_ATTEMPTS}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="login_reset_time">{{ lang('LOGIN_RESET_TIME') }}</label><br /><span class="explain">{{ lang('LOGIN_RESET_TIME_EXPLAIN') }}</span></dt>
+		<dd><input type="text" size="3" maxlength="4" name="login_reset_time" id="login_reset_time" value="{LOGIN_RESET_TIME}" /></dd>
+	</dl>
+</fieldset>
+<fieldset id="style_sett">
+	<dl>
+		<dt><label for="default_lang">{{ lang('DEFAULT_LANGUAGE') }}</label></dt>
+		<dd><select name="default_lang" id="default_lang">{LANG_SELECT}</select></dd>
+	</dl>
+	<dl>
+		<dt><label for="default_style">{{ lang('DEFAULT_STYLE') }}</label></dt>
+		<dd><select name="default_style" id="default_style">{STYLE_SELECT}</select></dd>
+	</dl>
+	<dl>
+		<dt><label for="mx_override_user_style_0">{{ lang('OVERRIDE_STYLE') }}</label><br /><span class="explain">{{ lang('OVERRIDE_STYLE_EXPLAIN') }}</span></dt>
+		<dd><input type="radio" name="mx_override_user_style" id="mx_override_user_style_1" value="1" class="radio" {OVERRIDE_STYLE_YES} /> <label for="mx_override_user_style_1">{{ lang('YES') }}</label>&nbsp;
+		<input type="radio" name="mx_override_user_style" id="mx_override_user_style_0" value="0" class="radio" {OVERRIDE_STYLE_NO} /> <label for="mx_override_user_style_0">{{ lang('NO') }}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="admin_style_select">{{ lang('DEFAULT_ADMIN_STYLE') }}</label></dt>
+		<dd><select name="admin_style_select" id="admin_style_select">{ADMIN_STYLE_SELECT}</select></dd>
+	</dl>
+	<dl>
+		<dt><label for="overall_header">{{ lang('OVERALL_HEADER') }}</label><!-- IF L_OVERALL_HEADER_EXPLAIN neq '' --><br /><span class="explain">{{ lang('OVERALL_HEADER_EXPLAIN') }}</span><!-- ENDIF --></dt>
+		<dd><input type="text" maxlength="150" size="50" name="overall_header" id="overall_header" value="{OVERALL_HEADER}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="overall_footer">{{ lang('OVERALL_FOOTER') }}</label><!-- IF L_OVERALL_FOOTER_EXPLAIN neq '' --><br /><span class="explain">{{ lang('OVERALL_FOOTER_EXPLAIN') }}</span><!-- ENDIF --></dt>
+		<dd><input type="text" maxlength="150" size="50" name="overall_footer" id="overall_footer" value="{OVERALL_FOOTER}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="main_layout">{{ lang('MAIN_LAYOUT') }}</label><!-- IF L_MAIN_LAYOUT_EXPLAIN neq '' --><br /><span class="explain">{{ lang('MAIN_LAYOUT_EXPLAIN') }}</span><!-- ENDIF --></dt>
+		<dd><input type="text" maxlength="150" size="50" name="main_layout" id="main_layout" value="{MAIN_LAYOUT}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="navigation_block">{{ lang('NAVIGATION_BLOCK') }}</label><!-- IF L_NAVIGATION_BLOCK_EXPLAIN neq '' --><br /><span class="explain">{{ lang('NAVIGATION_BLOCK_EXPLAIN') }}</span><!-- ENDIF --></dt>
+		<dd>{NAVIGATION_BLOCK}</dd>
+	</dl>
+	<dl>
+		<dt><label for="top_phpbb_links_1">{{ lang('TOP_PHPBB_LINKS') }}</label></dt>
+		<dd><input type="radio" name="top_phpbb_links" id="top_phpbb_links_1" value="1" class="radio" {S_TOP_PHPBB_LINKS_YES} /> <label for="top_phpbb_links_1">{{ lang('YES') }}</label>&nbsp;
+		<input type="radio" name="top_phpbb_links" id="top_phpbb_links_0" value="0" class="radio" {S_TOP_PHPBB_LINKS_NO} /> <label for="top_phpbb_links_0">{{ lang('NO') }}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="allow_html_1">{{ lang('ALLOW_HTML') }}</label></dt>
+		<dd><input type="radio" name="allow_html" id="allow_html_1" value="1" class="radio" {HTML_YES} /> <label for="allow_html_1">{{ lang('YES') }}</label>&nbsp;
+		<input type="radio" name="allow_html" id="allow_html_0" value="0" class="radio" {HTML_NO} /> <label for="allow_html_0">{{ lang('NO') }}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="allow_html_tags">{{ lang('ALLOWED_TAGS') }}</label><br /><span class="explain">{{ lang('ALLOWED_TAGS_EXPLAIN') }}</span></dt>
+		<dd><input type="text" size="30" maxlength="255" name="allow_html_tags" id="allow_html_tags" value="{HTML_TAGS}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="allow_bbcode_1">{{ lang('ALLOW_BBCODE') }}</label></dt>
+		<dd><input type="radio" name="allow_bbcode" id="allow_bbcode_1" value="1" class="radio" {BBCODE_YES} /> <label for="allow_bbcode_1">{{ lang('YES') }}</label>&nbsp;
+		<input type="radio" name="allow_bbcode" id="allow_bbcode_0" value="0" class="radio" {BBCODE_NO} /> <label for="allow_bbcode_0">{{ lang('NO') }}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="allow_smilies_1">{{ lang('ALLOW_SMILIES') }}</label></dt>
+		<dd><input type="radio" name="allow_smilies" id="allow_smilies_1" value="1" class="radio" {SMILE_YES} /> <label for="allow_smilies_1">{{ lang('YES') }}</label>&nbsp;
+		<input type="radio" name="allow_smilies" id="allow_smilies_0" value="0" class="radio" {SMILE_NO} /> <label for="allow_smilies_0">{{ lang('NO') }}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="smilies_path">{{ lang('SMILIES_PATH') }}</label> <br /><span class="explain">{{ lang('SMILIES_PATH_EXPLAIN') }}</span></dt>
+		<dd><input type="text" size="20" maxlength="255" name="smilies_path" id="smilies_path" value="{SMILIES_PATH}" /></dd>
+	</dl>
+</fieldset>
+<fieldset id="email_sett">
+	<dl>
+		<dt><label for="board_email">{{ lang('ADMIN_EMAIL') }}</label></dt>
+		<dd><input type="text" size="25" maxlength="100" name="board_email" id="board_email" value="{EMAIL_FROM}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="board_email_sig">{{ lang('EMAIL_SIG') }}</label><br /><span class="explain">{{ lang('EMAIL_SIG_EXPLAIN') }}</span></dt>
+		<dd><textarea name="board_email_sig" id="board_email_sig" rows="5" cols="30">{EMAIL_SIG}</textarea></dd>
+	</dl>
+	<dl>
+		<dt><label for="smtp_delivery_1">{{ lang('USE_SMTP') }}</label><br /><span class="explain">{{ lang('USE_SMTP_EXPLAIN') }}</span></dt>
+		<dd><input type="radio" name="smtp_delivery" id="smtp_delivery_1" value="1" class="radio" {SMTP_YES} /> <label for="smtp_delivery_1">{{ lang('YES') }}</label>&nbsp;
+		<input type="radio" name="smtp_delivery" id="smtp_delivery_0" value="0" class="radio" {SMTP_NO} /> <label for="smtp_delivery_0">{{ lang('NO') }}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="smtp_host">{{ lang('SMTP_SERVER') }}</label></dt>
+		<dd><input type="text" name="smtp_host" id="smtp_host" value="{SMTP_HOST}" size="25" maxlength="50" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="smtp_username">{{ lang('SMTP_USERNAME') }}</label><br /><span class="explain">{{ lang('SMTP_USERNAME_EXPLAIN') }}</span></dt>
+		<dd><input type="text" name="smtp_username" id="smtp_username" value="{SMTP_USERNAME}" size="25" maxlength="255" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="smtp_password">{{ lang('SMTP_PASSWORD') }}</label><br /><span class="explain">{{ lang('SMTP_PASSWORD_EXPLAIN') }}</span></dt>
+		<dd><input type="password" name="smtp_password" id="smtp_password" value="{SMTP_PASSWORD}" size="25" maxlength="255" /></dd>
+	</dl>
+</fieldset>
+<div id="config_info">
+<fieldset>
+	<legend>{{ lang('GENERAL_CONFIG_INFO') }}</legend>
+	<!-- IF PHPBB_BACKEND -->
+	<dl>
+		<dt><label>{{ lang('PHPBB_RELATIVE_PATH') }}</label></dt>
+		<dd>{PHPBB_RELATIVE_PATH}</dd>
+	</dl>
+	<!-- ENDIF -->
+	<dl>
+		<dt><label>{{ lang('PORTAL_VERSION') }}</label></dt>
+		<dd>{PORTAL_VERSION}</dd>
+	</dl>
+</fieldset>
+<!-- IF PHPBB_BACKEND -->
+<fieldset>
+	<legend>{{ lang('PHPBB_INFO') }}</legend>
+	<dl>
+		<dt><label>{{ lang('PHPBB_VERSION') }}</label></dt>
+		<dd>{PHPBB_VERSION}</dd>
+	</dl>
+	<dl>
+		<dt><label>{{ lang('SERVER_NAME') }}</label></dt>
+		<dd>{PHPBB_SERVER_NAME}</dd>
+	</dl>
+	<dl>
+		<dt><label>{{ lang('SCRIPT_PATH') }}</label></dt>
+		<dd>{PHPBB_SCRIPT_PATH}</dd>
+	</dl>
+</fieldset>
+<!-- ENDIF -->
+</div>
+	<p align="right">
+		{S_HIDDEN_FIELDS}
+		<input type="submit" name="submit" value="{{ lang('SUBMIT') }}" class="button1" />&nbsp;
+		<input type="reset" value="{{ lang('RESET') }}" class="button2" />
+	</p>
+</form>
+
+</div>
+	<span class="corners-bottom"><span></span></span>
+</div>
+</div>
+<script type="text/javascript">
+<!--
+function getObj(obj)
+{
+	return ( document.getElementById ? document.getElementById(obj) : ( document.all ? document.all[obj] : null ) );
+}
+
+function setNone( part)
+{
+	getObj( part+'_tab').className='';
+	getObj( part).style.display='none';
+
+}
+
+function selectPart( part)
+{
+	setNone( 'gen_sett');
+	setNone( 'portal_back');
+	setNone( 'cookie_sett');
+	setNone( 'style_sett');
+	setNone( 'email_sett');
+	setNone( 'config_info');
+	getObj( part+'_tab').className='activetab';
+	getObj( part).style.display='block';
+}
+selectPart( 'portal_back');
+// -->
+</script>
+
+<br clear="all" />
+
+{% INCLUDEJS '@orynider_mxpadmin/jscolor.js' %}
+{% include 'overall_footer.html' %}

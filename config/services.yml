@@ -1,0 +1,21 @@
+imports:
+    - { resource: tables.yml }
+
+services:
+    orynider.mxpadmin.controller.admin.controller:
+        class: orynider\mxpadmin\controller\admin_controller
+        arguments:
+            - '@template'
+            - '@user'
+            - '@log'
+            - '@cache'
+            - '@config'
+            - '@dbal.conn'
+            - '@request'
+            - '@ext.manager'
+            - '@path_helper'
+            - '%core.php_ext%'
+            - '%core.root_path%'
+            - '%orynider.mxpadmin.table.portal_config%'
+            - '@auth'
+            - '@?files.factory'
