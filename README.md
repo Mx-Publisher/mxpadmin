@@ -1,2 +1,2 @@
 # mxpadmin
-Adds link to MXP-CMS ACP in phpBB ACP.
+Adds link to MX-Publisher CMS Admin Control Pannel in phpBB ACP. This extensions ACP read-only tabs will give you a quick overview of all the various statistics of MX-Publisher. You can get back to this page by clicking on the <span style="text-decoration: underline;">Rhea Index</span> link in the left panel. To return to the index of your board, click the logo that is also in the left panel. The other links on the left hand side of this screen will allow you to control every aspect of your portal and forum experience.
