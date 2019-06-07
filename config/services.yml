@@ -18,4 +18,5 @@ services:
             - '%core.root_path%'
             - '%orynider.mxpadmin.table.portal_config%'
             - '@auth'
+            - '@language'
             - '@?files.factory'

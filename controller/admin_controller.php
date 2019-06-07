@@ -63,9 +63,16 @@ class admin_controller
 	* @var string
 	*/
 	protected $portal_config_table;
+	
+	
+	/** @var \phpbb\language\language $language */
+	protected $language;
 
 	/** @var \phpbb\files\factory */
 	protected $files_factory;
+	
+	/** @var mx_dbname */
+	protected $mx_dbname;
 
 	/**
 	* Constructor
@@ -81,6 +88,7 @@ class admin_controller
 	* @param \phpbb\path_helper								$path_helper
 	* @param string 													$php_ext
 	* @param string 													$root_path
+	* @param \phpbb\language\language					$language
 	* @param \phpbb\files\factory								$files_factory
 	*
 	*/
@@ -98,6 +106,7 @@ class admin_controller
 		$root_path,
 		$portal_config_table,
 		$auth,
+		\phpbb\language\language $language, 
 		\phpbb\files\factory $files_factory = null)
 	{
 		$this->template 					= $template;
@@ -113,6 +122,7 @@ class admin_controller
 		$this->root_path 					= $root_path;
 		$this->portal_config_table	= $portal_config_table;
 		$this->auth 							= $auth;
+		$this->language 					= $language;
 		$this->files_factory 				= $files_factory;
 		
 		$this->ext_name = $this->request->variable('ext_name', 'orynider/mxpadmin');
@@ -220,12 +230,12 @@ class admin_controller
 		$this->portal_table = $mx_table_prefix . 'portal';
 		
 		// Check some vars
-		if (!$portal_config['portal_version'])
+		if (!isset($portal_config['portal_version']))
 		{
 			$portal_config = $this->obtain_mxbb_config(false, $portal_id, $mx_dbname);
 		}
 		
-		if (!$portal_config['portal_backend_path'])
+		if (!isset($portal_config['portal_backend_path']))
 		{
 			$portal_config = $this->obtain_mxbb_config(false, $portal_id, $mx_dbname);
 		}
@@ -291,10 +301,12 @@ class admin_controller
 		// Validate backend
 		define('PORTAL_BACKEND', $portal_config['portal_backend']);
 		
-		// Now, load backend specific constants	
-		if ($this->config_path !== false)
+		
+		include_once($mx_root_path  . 'includes/mx_constants.' . $this->php_ext);
+		// Now, load backend specific constants. This already loaded in phpBB.	
+		if (($this->config_path !== false) && (PORTAL_BACKEND == 'internal'))
 		{	
-			require($mx_root_path  . 'includes/sessions/'.PORTAL_BACKEND.'/constants.' . $this->php_ext);	
+			include_once($mx_root_path  . 'includes/sessions/'.PORTAL_BACKEND.'/constants.' . $this->php_ext);	
 		}					
 		
 		$submit = ($this->request->is_set_post('submit')) ? true : false;
@@ -425,7 +437,7 @@ class admin_controller
 
 		$phpbb_rel_path = substr( "$phpbb_root_path", 3 );
 
-		//$navigation_block_list = get_list_formatted('block_list', $portal_config['navigation_block'], 'navigation_block', 'mx_menu_nav.' . $phpEx, false, 'mx_site_nav.' . $phpEx);
+		$navigation_block_list = $this->get_list_formatted('block_list', $portal_config['navigation_block'], 'navigation_block', 'mx_menu_nav.' . $phpEx, false, 'mx_site_nav.' . $phpEx);
 
 		$portal_version = $portal_config['portal_version'];
 		$phpbb_version = isset($this->config['version']) ? $this->config['version'] : '0.0.0';
@@ -480,7 +492,7 @@ class admin_controller
 		//
 		// Valid portal backend
 		//
-		$valid_backend_text = $this->confirm_backend() ? $lang['Portal_config_valid_true'] : $lang['Portal_config_valid_false'];
+		$valid_backend_text = $this->confirm_backend() ? $this->language->lang('Portal_config_valid_true') : $this->language->lang('Portal_config_valid_false');
 
 		$this->template->assign_vars(array(
 			"U_ACTION" => $this->u_action,
@@ -544,7 +556,7 @@ class admin_controller
 			"GZIP_YES" => ( $portal_config['gzip_compress'] ) ? "checked=\"checked\"" : "",
 			"GZIP_NO" => ( !$portal_config['gzip_compress'] ) ? "checked=\"checked\"" : "",
 
-			"PORTAL_PHPBB_URL" => ((null !== PHPBB_URL) ? PHPBB_URL : ''),
+			"PORTAL_PHPBB_URL" => defined('PHPBB_URL') ? PHPBB_URL : generate_board_url(),
 			"OVERALL_HEADER" => $portal_config['overall_header'],
 			
 			"OVERALL_FOOTER" => $portal_config['overall_footer'],
@@ -644,7 +656,7 @@ class admin_controller
 			//"L_DEFAULT_LANGUAGE" => $lang['Default_language'],
 			"LANG_SELECT" => $lang_select,
 
-			"L_DEFAULT_STYLE" => $lang['DEFAULT_STYLE'] . ' (' . $portal_config['default_style'] . ') ',
+			"L_DEFAULT_STYLE" => $this->language->lang('DEFAULT_STYLE') . ' (' . $portal_config['default_style'] . ') ',
 
 			//"L_DEFAULT_ADMIN_STYLE" => $lang['DEFAULT_ADMIN_STYLE'] . ' (' . $portal_config['default_admin_style'] . ') ',
 			
@@ -849,15 +861,21 @@ class admin_controller
 					mx_message_die(CRITICAL_ERROR, "Could not connect to the backend database");
 				}
 			}
-			*/			
+			*/	
+			$draft_rows = array();
 			$sql = "SELECT config_value from " . $table_prefix . "config WHERE config_name = 'cookie_domain'";
 			if(!$_result = $this->db->sql_query($sql))
 			{
 				//For php 5.3.0 or less
 				$db_sql_error = $this->db->sql_error('');
 				print('Configuration file opened but backend check query failed for backend: '. basename( __DIR__  ) .  ', line: ' . __LINE__ . ', file: ' . __FILE__ . '<br /><br />SQL Error : ' . $db_sql_error['code'] . ' ' . $db_sql_error['message']);
+			}		
+			while ($row = $this->db->sql_fetchrow($_result))
+			{
+				$draft_rows[] = $row;
 			}
-			$portal_backend_valid_db = $this->db->sql_numrows($_result) != 0;
+			$this->db->sql_freeresult($result);		
+			$portal_backend_valid_db = count($draft_rows) != 0;			
 		}
 		else
 		{
@@ -870,10 +888,15 @@ class admin_controller
 			//
 			// Validate db connection for backend
 			//
+			$draft_rows = array();
 			$_result = $this->db->sql_query( "SELECT config_value from " . $table_prefix . "config WHERE config_name = 'cookie_domain'" );
-			$portal_backend_valid_db = $this->db->sql_numrows($_result) != 0;
-		}
-		
+			while ($row = $this->db->sql_fetchrow($_result))
+			{
+				$draft_rows[] = $row;
+			}
+			$this->db->sql_freeresult($result);		
+			$portal_backend_valid_db = count($draft_rows) != 0;
+		}	
 		return $portal_backend_valid_file && !empty($table_prefix) && $portal_backend_valid_db;
 	}	
 
@@ -1459,6 +1482,7 @@ class admin_controller
 			
 			print('Configuration file ' . $config . ' couldn\'t be opened.');
 		}
+		$acm_type = !isset($acm_type) ? 'phpbb\\cache\\driver\\file' : $acm_type; 
 		if ((@include $this->root_path . "language/en/install.$phpEx") !== false)
 		{
 			$left_piece1 = explode('. You', $lang['CONVERT_COMPLETE_EXPLAIN']);	
@@ -1747,6 +1771,165 @@ class admin_controller
 		$column_list .= '</select>';
 
 		unset($row);
+		return $column_list;
+	}
+	
+	/**
+	 * Get html select list - from db query - with formatted output.
+	 *
+	 * This function generates and returns a html select list (name = $nameselect). Supported $type options are:
+	 * - page_list
+	 * - function_list
+	 * - block_list
+	 * - dyn_block_list
+	 * Or the function generates a block_list for given $function_file.
+	 *
+	 * @access public
+	 * @param string $type list types
+	 * @param string $id needle
+	 * @param string $name_select select name
+	 * @param string $function_file get block_list for $function_file
+	 * @param boolean $multiple_select
+	 * @param string $function_file2 get block_list also for $function_file2
+	 * @return string (html)
+	 */
+	function get_list_formatted($type, $id, $name_select = '', $function_file = '', $multiple_select = false, $function_file2 = '')
+	{
+		if( $type == 'page_list' )
+		{
+			//
+			// get pages dropdown
+			//
+			$name_select = empty($name_select) ? 'page_id' : $name_select;
+			$idfield = 'page_id';
+			$namefield = 'page_name';
+			$descfield = 'page_desc';
+
+			$sql = "SELECT *
+				FROM " . PAGE_TABLE . "
+				ORDER BY page_name ASC, page_desc ASC";
+		}
+		elseif( $type == 'function_list' )
+		{
+			//
+			// get functions dropdown
+			//
+			$name_select = 'function_id';
+			$idfield = 'function_id';
+			$namefield = 'function_name';
+
+			$sql = "SELECT function_admin, fnc.function_name, fnc.function_id, fnc.function_desc, fnc.module_id, mdl.module_name, mdl.module_id, mdl.module_desc
+				FROM " . FUNCTION_TABLE . " fnc,
+					" . MODULE_TABLE . " mdl
+				WHERE mdl.module_id = fnc.module_id
+				ORDER BY mdl.module_name ASC, fnc.function_name ASC";
+		}
+		elseif( $type == 'block_list' )
+		{
+			// get all blocks dropdown (optionally filtering by function_file)
+			$idfield = 'block_id';
+			$namefield = 'block_title';
+			$descfield = 'block_desc';
+
+			$function_file_filter_temp = ( !empty($function_file2) ? " OR fnc.function_file = '$function_file2'" : '' );
+			$function_file_filter = ( !empty($function_file) ? " AND ( fnc.function_file = '$function_file' ".$function_file_filter_temp.")" : '' );
+
+			$sql = "SELECT blk.*, function_admin, fnc.function_name, fnc.function_id, fnc.function_desc, fnc.module_id, mdl.module_name, mdl.module_id, mdl.module_desc
+				FROM " . BLOCK_TABLE . " blk,
+					" . FUNCTION_TABLE . " fnc,
+					" . MODULE_TABLE . " mdl
+				WHERE blk.function_id = fnc.function_id
+					AND mdl.module_id = fnc.module_id
+					$function_file_filter
+				ORDER BY mdl.module_name ASC, fnc.function_name ASC";
+		}
+		elseif( $type == 'dyn_block_list' )
+		{
+			//
+			// get all dynamic blocks dropdown (2.8)
+			//
+			$idfield = 'block_id';
+			$namefield = 'block_title';
+			$descfield = 'block_desc';
+
+			$sql = "SELECT blk.*, function_admin, fnc.function_name, fnc.function_id, fnc.function_desc, fnc.module_id, mdl.module_name, mdl.module_id, mdl.module_desc
+				FROM " . BLOCK_TABLE . " blk,
+					" . FUNCTION_TABLE . " fnc,
+					" . MODULE_TABLE . " mdl
+				WHERE blk.function_id = fnc.function_id
+					AND mdl.module_id = fnc.module_id
+					AND fnc.function_file = 'mx_dynamic.php'
+				ORDER BY mdl.module_name ASC, fnc.function_name ASC";
+		}
+
+		if( !($result = $this->db->sql_query($sql)) )
+		{
+			$this->message_die(GENERAL_ERROR, "Couldn't get list of Column/blocks", '', __LINE__, __FILE__, $sql);
+		}
+
+		if ($multiple_select)
+		{
+			$multiple_select_option = 'multiple="multiple"';
+		}
+		else
+		{
+			$multiple_select_option = '';
+		}
+		
+		$column_list = '<select name="' . $name_select . '" '.$multiple_select_option.'>';
+		if( $type == 'page_list' )
+		{
+			$column_list .= '<option value="0">' . "- not selected</option>\n";
+		}
+		$draft_rows = array();
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$draft_rows[] = $row;
+		}
+		$total_blocks = count($draft_rows);
+
+		for ($j = 0; $j < $total_blocks; $j++)
+		{
+			$i = ($j > 0) ? abs($j - 1) : 0;
+			if (empty($row[$j]['module_name']))
+			{
+				$row[$j]['module_name'] = '';
+			}
+			if (!isset($row[$j]['block_id']))
+			{
+				$row[$j]['block_id'] = 0;
+			}
+			if (!isset($row[$j]['block_title']))
+			{
+				$row[$j]['block_title'] = 'demo block';
+			}
+			if ($row[$j]['module_name'] != $row[$i]['module_name'])
+			{
+				$column_list .= '<option value="">' . 'Module: ' . $row[$j]['module_name'] . '----------' . "</option>\n";
+			}
+			$block_type = '';
+			if ($type == 'block_list')
+			{
+				if (isset($row[$j]['function_name']) && isset($row[$i]['function_name']))
+				{
+					if ($row[$j]['function_name'] != $row[$i]['function_name'])
+					{
+						$block_type = $row[$j]['function_name'] . ': ';
+					}
+				}
+			}
+			$block_description_str = '';		
+			if( !empty($descfield) )
+			{
+				$block_description_str = !empty($row[$j][$descfield]) ? ' (' . $row[$j][$descfield] . ')' : ' (no desc)';
+			}
+			$selected = (isset($row[$j][$idfield]) && ($row[$j][$idfield] == $id)) ? ' selected="selected"' : '';
+			$column_list .= '<option value="' . $row[$j][$idfield] . '"' . $selected . '>&nbsp;&nbsp;- ' . $block_type . $row[$j][$namefield] . $block_description_str . "</option>\n";
+		}
+		$column_list .= '</select>';
+
+		unset($row);
+		$this->db->sql_freeresult($result);
 		return $column_list;
 	}
 		
